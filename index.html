@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Плюс\минус</title>
+	<script type="text/javascript" src="jquery-3.0.0.js"></script>
+	<style type="text/css">
+	.line{
+		width:251px;/*ширина плюс 1px*/
+		height: 30px;
+		margin-left: 10px;
+		box-sizing: border-box;
+		border: 1px solid #2A1717;
+			-webkit-border-radius: 5px;
+	        border-radius: 5px;
+	}
+	.line .progress,.line .progress1{
+		height: 30px;
+		width:0px;
+		background:#E01E31;
+			-webkit-border-radius: 5px;
+	        border-radius: 5px;
+		position:absolute;
+	}
+	.line .progress1{
+		background: #66BB43;
+	}
+	.line .progress .arrow,.line .progress1 .arrow1{
+		position: absolute;
+		right:0px;
+		top: -6px;
+		width: 5px;
+		-webkit-border-radius: 5px;
+	        border-radius: 5px;
+		height: 150%;
+		cursor: pointer;
+		background: #ccc;
+	}
+	.line .progress .text,.line .progress1 .text1{
+		position: absolute;
+		bottom:-10px;
+		left:-3px;
+		font-size: 9px;
+	}
+	</style>
+</head>
+<body>
+	<div class="line">
+		<div class="progress">
+			<div class="arrow">
+				<span class="text"></span>
+			</div>
+		</div>
+
+	</div>
+<div class="line">
+	<div class="progress1">
+				<div class="arrow1">
+	<span class="text1"></span>
+				</div>
+			</div>
+</div>
+	<br>
+	<p class="price">От 0р. До 0р.</p>
+<!-- 	<button class="plus">Плюс</button>
+	<button class="minus">Минус</button>
+	<form action="" >
+		<input class="counter" type="number" step="1" max="20" min="0">
+	</form> -->
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+
+			var width = $(".progress,.progress1").width();
+			if(width == 0){
+				$(".arrow,.arrow1").css('left','0px');
+			}
+			else{
+				$(".arrow,.arrow1").css('right','0px');
+			}
+			$(".arrow>.text,.arrow1>.text1").html(0);
+			var countInterval = 20;
+			var countInterval = $(".counter").attr("max");
+			width = $(".line").width();
+			var maxSize = 700000;
+			var stepSize = maxSize/(width+1);
+			var step = width/countInterval;
+			var widthProgres=0;
+			$(".counter").on('click blur',function(){
+				widthProgres= $(this).val() * step;
+				if(widthProgres <= width){
+					$('.progress').css({"width": widthProgres+"px"});
+					$(".arrow").css('left',(widthProgres-$(".arrow").width())+'px');
+					$(".arrow>.text").html(widthProgres*stepSize);
+				}
+				else{
+					$('.progress').css({"width": width+"px"});
+					$(".arrow").css('left',(width-$(".arrow").width())+'px');
+					$(".arrow>.text").html(width*stepSize);
+				}
+			});
+			$(".plus").on('click',function(){
+				 widthProgres= $('.progress').width() +step;
+				if(widthProgres <= width){
+					$('.progress').css({"width": widthProgres+"px"});
+					$(".arrow").css('left',(widthProgres-$(".arrow").width())+'px');
+					$(".arrow>.text").html(widthProgres*stepSize);
+				}
+				else{
+					$('.progress').css({"width": width+"px"});
+					$(".arrow").css('left',(width-$(".arrow").width())+'px');
+					$(".arrow>.text").html(width*stepSize);
+				}
+			});
+			$(".minus").on('click',function(){
+				 widthProgres= $('.progress').width() -step;
+				if(widthProgres >= 0){
+					$('.progress').css({"width": widthProgres+"px"});
+					$(".arrow").css('left',(widthProgres-$(".arrow").width())+'px');
+					$(".arrow>.text").html(widthProgres*stepSize);
+				}
+				else{
+					$('.progress').css({"width": 0+"px"});
+					$(".arrow").css('left','0px');
+					$(".arrow>.text").html(0);
+				}
+			});
+			$(".arrow,.progress").on('mousedown',function(){
+				var X=0;
+
+				$(".line,.progress").bind('mousemove',function(e){
+					e.preventDefault();
+					var ofl = $(this).offset().left;
+					X = e.pageX - ofl;
+					var x = X - $(".arrow").width();
+					x = x < 0 ? 0: x;
+					$(".arrow").css('left',x+'px');
+					$(".progress").width(X);
+					$(".arrow>.text").html(X*stepSize);
+					var min,max;
+					if($(".text").text() > $(".text1").text()){
+						max = $(".text").text();
+						min = $(".text1").text();
+					}
+					else{
+						min = $(".text").text();
+						max = $(".text1").text()
+					}
+					$(".price").html('От '+min + 'р. До '+ max+'р.');
+				});
+				$(".arrow").bind('mouseleave',function(){
+					if(X > 10){
+						$(".arrow").css('left',(width-$(".arrow").width())+'px');
+						$(".progress").width(width);
+						$(".arrow").unbind('mouseleave');
+					}
+					else if(X < 0){
+						$(".arrow").css('left','0px');
+						$(".progress").width(0);
+						$(".arrow").unbind('mouseleave');
+					}
+					
+				});
+
+			});
+
+			$(".line,body,.progress").on('mouseup',function(){
+				
+				$(".line,.progress").unbind('mousemove');				
+				$(".arrow").unbind('mouseleave');
+			});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			$(".arrow1,.progress1").on('mousedown',function(){
+				var X=0;
+
+				$(".line,.progress1").bind('mousemove',function(e){
+					e.preventDefault();
+					var ofl = $(this).offset().left;
+					X = e.pageX - ofl;
+					var x = X - $(".arrow1").width();
+					x = x < 0 ? 0: x;
+					$(".arrow1").css('left',x+'px');
+					$(".progress1").width(X);
+					$(".arrow1>.text1").html(X*stepSize);
+					var min,max;
+					if($(".text").text() > $(".text1").text()){
+						max = $(".text").text();
+						min = $(".text1").text();
+					}
+					else{
+						min = $(".text").text();
+						max = $(".text1").text()
+					}
+					$(".price").html('От '+min + 'р. До '+ max+'р.');
+				});
+				$(".arrow1").bind('mouseleave',function(){
+					if(X > 10){
+						$(".arrow1").css('left',(width-$(".arrow").width())+'px');
+						$(".progress1").width(width);
+						$(".arrow1").unbind('mouseleave');
+					}
+					else if(X < 0){
+						$(".arrow1").css('left','0px');
+						$(".progress1").width(0);
+						$(".arrow1").unbind('mouseleave');
+					}
+					
+				});
+
+			});
+
+			$(".line,body,.progress1").on('mouseup',function(){
+				
+				$(".line,.progress1").unbind('mousemove');				
+				$(".arrow1").unbind('mouseleave');
+			});
+
+		});
+	</script>
+</body>
+</html>
